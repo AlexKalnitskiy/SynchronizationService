@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OracleProcedureManager", "OracleProcedureManager\OracleProcedureManager.csproj", "{00A2B34C-0339-4719-A158-8C4700C8BBCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OraDBSyncService", "WindowsoOraDBSyncService\OraDBSyncService.csproj", "{EBA37214-00A9-4104-83FD-7223265C381E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OraDBSyncServiceController", "OraDBSyncServiceController\OraDBSyncServiceController.csproj", "{BDAB5791-79EC-42BB-89C2-5A17493DAC57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiTests", "Tests\ApiTests.csproj", "{93A0E433-B6FA-40B9-9FDA-C772A1423056}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{00A2B34C-0339-4719-A158-8C4700C8BBCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00A2B34C-0339-4719-A158-8C4700C8BBCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00A2B34C-0339-4719-A158-8C4700C8BBCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00A2B34C-0339-4719-A158-8C4700C8BBCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBA37214-00A9-4104-83FD-7223265C381E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBA37214-00A9-4104-83FD-7223265C381E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBA37214-00A9-4104-83FD-7223265C381E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBA37214-00A9-4104-83FD-7223265C381E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDAB5791-79EC-42BB-89C2-5A17493DAC57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDAB5791-79EC-42BB-89C2-5A17493DAC57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDAB5791-79EC-42BB-89C2-5A17493DAC57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDAB5791-79EC-42BB-89C2-5A17493DAC57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93A0E433-B6FA-40B9-9FDA-C772A1423056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93A0E433-B6FA-40B9-9FDA-C772A1423056}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93A0E433-B6FA-40B9-9FDA-C772A1423056}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93A0E433-B6FA-40B9-9FDA-C772A1423056}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {949E23AC-6126-4AC0-A3A4-D92160232755}
+	EndGlobalSection
+EndGlobal
