@@ -2,7 +2,7 @@
 using OracleProcedureManager;
 using System;
 
-namespace OraDBSyncService
+namespace OraDBSyncService.Logging
 {
     public static class BPMTaskSpecialLog
     {

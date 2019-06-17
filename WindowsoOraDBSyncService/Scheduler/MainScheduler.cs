@@ -79,6 +79,13 @@ namespace OraDBSyncService.Scheduler
             Scheduler = await StdSchedulerFactory.GetDefaultScheduler();
             return await Scheduler.DeleteJob(key);
         }
+
+        public async Task TriggerTaskAsync(string taskId)
+        {
+            JobKey key = new JobKey(taskId);
+            Scheduler = await StdSchedulerFactory.GetDefaultScheduler();
+            await Scheduler.TriggerJob(key);
+        }
         #endregion Methods: public
 
         #region Methods: private

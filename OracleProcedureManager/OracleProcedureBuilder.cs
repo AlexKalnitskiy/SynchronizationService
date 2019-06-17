@@ -44,24 +44,12 @@ namespace OracleProcedureManager
             procedure.Parameters.Add(param);
             return procedure;
         }
-        public static List<OracleProcedurePack> ParseToProcedurePack(this List<SynchronizationObject> procedurePack)
+
+        public static OracleCommand ExtractProcedure(Procedure procedure)
         {
-            List<OracleProcedurePack> resultList = new List<OracleProcedurePack>();
-            procedurePack.ForEach(storage =>
-            {
-                OracleProcedurePack result = new OracleProcedurePack(storage.SchemaName)
-                {
-                    WithNoIndex = storage.WithNoIndex
-                };
-                storage.ProceduresList.ForEach(procedure =>
-                {
-                    OracleCommand command = CreateProcedure(procedure.ProcedureName);
-                    procedure.ProcedureParams.ForEach(x => command.AddStringParameter(x));
-                    result.Procedures.Add(procedure.Order, command);
-                });
-                resultList.Add(result);
-            });
-            return resultList;
+            var result = CreateProcedure(procedure.ProcedureName);
+            procedure.ProcedureParams.ForEach(x => result.AddStringParameter(x));
+            return result;
         }
     }
 }

@@ -158,18 +158,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BPMTaskSpecialLog.cs" />
+    <Compile Include="Logging\BPMTaskSpecialLog.cs" />
     <Compile Include="Installer.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Installer.Designer.cs">
       <DependentUpon>Installer.cs</DependentUpon>
     </Compile>
-    <Compile Include="OracleSink.cs" />
+    <Compile Include="Logging\SerilogInit.cs" />
+    <Compile Include="Logging\OracleSink.cs" />
     <Compile Include="Scheduler\IJobOperator.cs" />
     <Compile Include="Scheduler\JobOperatorCheck.cs" />
     <Compile Include="Scheduler\JobOperatorDelete.cs" />
     <Compile Include="Scheduler\JobOperatorCreate.cs" />
+    <Compile Include="Scheduler\JobOperatorExecute.cs" />
     <Compile Include="Scheduler\JobOperatorReplace.cs" />
     <Compile Include="Scheduler\MainScheduler.cs" />
     <Compile Include="Scheduler\JobOperatorFactory.cs" />

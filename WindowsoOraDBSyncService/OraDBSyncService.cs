@@ -31,7 +31,7 @@ namespace OraDBSyncService
         protected override void OnStart(string[] args)
         {
             //Logger initialization
-            InitLog();
+            Logging.SerilogInit.InitLog();
             try
             {
                 SocketServer server = SocketServer.GetDefaultServer();
@@ -44,30 +44,6 @@ namespace OraDBSyncService
                 Log.Fatal(exc, "Server initialization crashed!");
                 Stop();
             }
-        }
-
-        //For debug
-        public void InitLog()
-        {
-            //Logger initialization
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.File(
-                    "logMain-.txt",
-                    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning,
-                    rollingInterval: RollingInterval.Day)
-                .WriteTo.File(
-                    "logDebug-.txt",
-                    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug,
-                    rollingInterval: RollingInterval.Day
-                )
-                .WriteTo.File(
-                    "logError-.txt",
-                    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error,
-                    rollingInterval: RollingInterval.Day
-                )
-                .WriteTo.OracleSink()
-                .CreateLogger();
         }
     }
 }

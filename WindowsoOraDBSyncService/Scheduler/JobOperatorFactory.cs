@@ -19,6 +19,8 @@ namespace OraDBSyncService.Scheduler
                 return new JobOperatorCheck();
             if (command == RouterCommands.Replace)
                 return new JobOperatorReplace();
+            if (command == RouterCommands.Execute)
+                return new JobOperatorExecute();
             if (command == RouterCommands.Unknown)
                 return new JobOperatorCheck();
 

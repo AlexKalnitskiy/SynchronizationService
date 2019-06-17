@@ -65,30 +65,30 @@ namespace OracleProcedureManager
             return Task.Run(() => PerformOperation(command));
         }
 
-        public async Task<SyncObjExecutionResult> ExecuteProcedurePackAsync(OracleProcedurePack SyncObjectPack, CancellationToken token)
+        public async Task<SyncObjExecutionResult> ExecuteProcedurePackAsync(SynchronizationObject SyncObject, CancellationToken token)
         {
             SyncObjExecutionResult objResult = new SyncObjExecutionResult()
             {
-                SchemaName = SyncObjectPack.SchemaName,
+                SchemaName = SyncObject.SchemaName,
                 isExecuted = true
             };
 
-            foreach (OracleCommand procedure in SyncObjectPack.Procedures.Values)
+            foreach (Procedure procedure in SyncObject.ProceduresList)
             {
                 try
                 {
                     if (!token.IsCancellationRequested)
                     {
-                        ExecutionStartedEvent(SyncObjectPack.SchemaName);
-                        await PerformOperationAsync(procedure);
-                        ExecutionFinishedEvent(SyncObjectPack.SchemaName);
+                        ExecutionStartedEvent(SyncObject.SchemaName);
+                        await PerformOperationAsync(OracleProcedureBuilder.ExtractProcedure(procedure));
+                        ExecutionFinishedEvent(SyncObject.SchemaName);
                     }
                     else
                     {
                         await InterruptAll();
                         objResult.ExceptionMessage = Settings.isInterruptRequestedMessage;
                         objResult.isExecuted = false;
-                        ExecutionCancelledEvent(SyncObjectPack.SchemaName);
+                        ExecutionCancelledEvent(SyncObject.SchemaName);
                         break;
                     }
                 }
@@ -98,24 +98,12 @@ namespace OracleProcedureManager
                     objResult.ExceptionMessage = ex.Message;
                     objResult.isExecuted = false;
                     await InterruptAll();
-                    ErrorEvent(SyncObjectPack.SchemaName, ex);
+                    ErrorEvent(SyncObject.SchemaName, ex);
                     break;
                 }
             }
             return objResult;
         }
-
-        public void ExecuteProcedurePack(OracleProcedurePack SyncObjectPack)
-        {
-            if (Connection.State != System.Data.ConnectionState.Open)
-                Connection.Open();
-            foreach (OracleCommand procedure in SyncObjectPack.Procedures.Values)
-            {
-                PerformOperationAsync(procedure);
-                SyncObjectPack.SuccessfullyCompleted = true;
-            }  
-        }
-
         public async Task<SyncTaskExecutionResult> ExecuteSyncronizationTaskAsync(SynchronizationTask task, CancellationToken token)
         {
             //Result object init
@@ -128,7 +116,7 @@ namespace OracleProcedureManager
             };
 
             //Synchronization loop
-            foreach (var x in task.SyncObjectList.ParseToProcedurePack())
+            foreach (var x in task.SyncObjectList)
             {
                 /*if (x.WithNoIndex)
                      NoIndexExecute(x.SchemaName, () => ExecuteProcedurePack(x));
@@ -141,8 +129,9 @@ namespace OracleProcedureManager
             }
             return result.CollectResults();
         }
+
         //TODO: Refactor for async
-        public void NoIndexExecute(string schemaName, Action executeMethod)
+        /*public void NoIndexExecute(string schemaName, Action executeMethod)
         {
             OracleProcedurePack disablePack = new OracleProcedurePack($"disable all on {schemaName}");
             disablePack.Procedures.Add(1, OracleProcedureBuilder.CreateProcedure(Settings.ConstraintDisableProcName).AddStringParameter(schemaName));
@@ -155,7 +144,7 @@ namespace OracleProcedureManager
             executeMethod.Invoke();
             ExecuteProcedurePack(enablePack);
 
-        }
+        }*/
         #endregion Methods:Public
     }
 }

@@ -127,7 +127,7 @@ namespace Tests
 
             //Initialiae services like OnStart() service method
             OraDBSyncService.OraDBSyncService actualServ = new OraDBSyncService.OraDBSyncService();
-            actualServ.InitLog();
+            OraDBSyncService.Logging.SerilogInit.InitLog();
             SocketServer server = SocketServer.GetDefaultServer();
             actualServ.Router = new CommonRequestRouter();
             bool serverStartedFlag = Task.Factory.StartNew(server.Start, TaskCreationOptions.LongRunning).Result;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace OraDBSyncService.Scheduler
 {
 
-    public enum RouterCommands { Create, Delete, Check, Replace, Unknown }
+    public enum RouterCommands { Create, Delete, Check, Replace, Execute, Unknown }
 
     public static class RouterValidator
     {
