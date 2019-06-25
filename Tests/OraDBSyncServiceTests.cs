@@ -10,7 +10,7 @@ using System.Threading;
 using Quartz.Impl.Matchers;
 using System.Diagnostics;
 using OraDBSyncService.Scheduler;
-using WebSocket4Net;
+using SyncServiceClient;
 
 namespace Tests
 {
@@ -43,7 +43,7 @@ namespace Tests
 
         public Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Test.Results.Add((SyncTaskExecutionResult)context.Result);
+            Test.Results.Add((SyncTaskExecutionContext)context.Result);
             return Task.Run(() => this.GetHashCode());
         }
     }
@@ -53,27 +53,24 @@ namespace Tests
         public static int ResponseCount = 0;
 
         string Uri = "ws://127.0.0.1:2019/";
-
+        public ServiceClient client;
         public ClientUnit()
         {
+            
         }
 
         public ClientUnit(string Uri)
         {
             this.Uri = Uri;
         }
-        public void Send(string text)
+        public void Send(SynchronizationTask text, RouterCommands cmd)
         {
-            WebSocket socket = new WebSocket(Uri);
-            socket.MessageReceived += Socket_MessageReceived;
-            socket.Open();
-            while (socket.State == WebSocketState.Connecting)
-            {
-            }
-            socket.Send(text);
+            client = new ServiceClient();
+            client.OnMessageReceived += Client_OnMessageReceived;
+            client.ServiceRequest(text, cmd);
         }
 
-        private void Socket_MessageReceived(object sender, MessageReceivedEventArgs e)
+        private void Client_OnMessageReceived(string message)
         {
             ResponseCount++;
         }
@@ -84,7 +81,7 @@ namespace Tests
     public class OraDBSyncServiceTests
     {
         int tasksCount = 4;
-        public List<SyncTaskExecutionResult> Results = new List<SyncTaskExecutionResult>();
+        public List<SyncTaskExecutionContext> Results = new List<SyncTaskExecutionContext>();
 
         [TestMethod]
         public void SchedulerTaskLifeCycleTest()
@@ -109,7 +106,7 @@ namespace Tests
                     {
                         Order = 1,
                         SchemaName = expectedSchemaName[i],
-                        WithNoIndex = false,
+                        //WithNoIndex = false,
                         ProceduresList = new List<Procedure>()
                         {
                             new Procedure()
@@ -129,7 +126,7 @@ namespace Tests
             OraDBSyncService.OraDBSyncService actualServ = new OraDBSyncService.OraDBSyncService();
             OraDBSyncService.Logging.SerilogInit.InitLog();
             SocketServer server = SocketServer.GetDefaultServer();
-            actualServ.Router = new CommonRequestRouter();
+            actualServ.Router = CommonRequestRouter.GetRouter();
             bool serverStartedFlag = Task.Factory.StartNew(server.Start, TaskCreationOptions.LongRunning).Result;
             IScheduler scheduler = MainScheduler.GetMainScheduler().Scheduler;
 
@@ -138,12 +135,10 @@ namespace Tests
             AddTasksByClientMockUnit();
             void AddTasksByClientMockUnit()
             {
-
+                ClientUnit mock = new ClientUnit();
                 for (int i = 0; i < tasksCount; i++)
                 {
-                    tasks[i].RouterCommand = RouterCommands.Create.ToString();
-                    ClientUnit mock = new ClientUnit();
-                    mock.Send(tasks[i].ToJson());
+                    mock.Send(tasks[i], RouterCommands.Create);
 
                     //bool startResult = actualServ.Router.StartTaskAsync(tasks[i]).Result;
 
@@ -202,7 +197,7 @@ namespace Tests
             //Asserting results
             for (int i = 0; i < tasksCount; i++)
             {
-                Assert.IsTrue(Results[i].isExecutedCorrectly);
+                Assert.IsTrue(Results[i].TaskCurrentState == TaskStateConstants.Ready);
             }
 
 
@@ -213,9 +208,8 @@ namespace Tests
             {
                 for (int i = 0; i < tasksCount; i++)
                 {
-                    tasks[i].RouterCommand = RouterCommands.Delete.ToString();
                     ClientUnit mock = new ClientUnit();
-                    mock.Send(tasks[i].ToJson());
+                    mock.Send(tasks[i], RouterCommands.Delete);
                 }
 
                 ClientUnit.ResponseCount = 0;

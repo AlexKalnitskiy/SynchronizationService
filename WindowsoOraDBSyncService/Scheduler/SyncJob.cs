@@ -29,12 +29,13 @@ namespace OraDBSyncService.Scheduler
             oracleScriptController.AddListener(new BPMListener(syncTask.SyncTaskId));
 
             //Start sync
-            SyncTaskExecutionResult taskExecutionResult =
+            SyncTaskExecutionContext taskExecutionResult =
                 await oracleScriptController.ExecuteSyncronizationTaskAsync(syncTask, context.CancellationToken);
             context.Result = taskExecutionResult;
         }
     }
 
+    //TODO Здесь одинаково для разных процедур! Дублирование информации
     internal class BPMListener : ISyncListener
     {
         string _taskId;
@@ -47,19 +48,19 @@ namespace OraDBSyncService.Scheduler
             BPMTaskSpecialLog.Log(_taskId, $"Ошибка синхронизации: {schemaName}", Serilog.Events.LogEventLevel.Error);
         }
 
-        public void ExecutionCancelledEvent(string schemaName)
+        public void ExecutionCancelledEvent(string objectName, string procedureName)
         {
-            BPMTaskSpecialLog.Log(_taskId, $"Отмена синхронизации: {schemaName}");
+            BPMTaskSpecialLog.Log(_taskId, $"Отмена синхронизации: {objectName}: {procedureName}");
         }
 
-        public void ExecutionFinishedEvent(string schemaName)
+        public void ExecutionFinishedEvent(string objectName, string procedureName)
         {
-            BPMTaskSpecialLog.Log(_taskId, $"Завершение синхронизации: {schemaName}");
+            BPMTaskSpecialLog.Log(_taskId, $"Завершение синхронизации: {objectName}: {procedureName}");
         }
 
-        public void ExecutionStartedEvent(string schemaName)
+        public void ExecutionStartedEvent(string objectName, string procedureName)
         {
-            BPMTaskSpecialLog.Log(_taskId, $"Начало синхронизации: {schemaName}");
+            BPMTaskSpecialLog.Log(_taskId, $"Начало синхронизации: {objectName}: {procedureName}");
         }
     }
 }

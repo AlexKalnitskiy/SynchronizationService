@@ -1,16 +1,11 @@
 ﻿using OracleProcedureManager;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using SyncServiceClient;
 
 namespace OraDBSyncService.Scheduler
 {
-
-    public enum RouterCommands { Create, Delete, Check, Replace, Execute, Unknown }
-
     public static class RouterValidator
     {
         public static RouterCommands Validate(string command)
@@ -29,7 +24,7 @@ namespace OraDBSyncService.Scheduler
 
     public static class Extensions
     {
-        public static async Task<bool> OperateTaskRequest(this SynchronizationTask it)
+        public static async Task<JobOperatorResponce> OperateTaskRequest(this SynchronizationTask it)
         {
             return await JobOperatorFactory.GetJobOperator(RouterValidator.Validate(it.RouterCommand)).Operate(it);
         }

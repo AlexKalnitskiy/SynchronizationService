@@ -52,6 +52,7 @@
     <Compile Include="Serialization\SynchronizationTask.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="TaskStateConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -39,11 +39,16 @@ namespace OraDBSyncService.Logging
         }
         private void DBLog(string type, string data)
         {
-            OracleCommand logRecord = GetWriteInDBCommand(type, data);
-            logRecord.Connection = ServiceSettings.Get().ConnectionString.OpenNewConnection();
-            OracleTransaction trasaction = logRecord.Connection.BeginTransaction();
-            logRecord.ExecuteNonQuery();
-            trasaction.Commit();
+            try
+            {
+                OracleCommand logRecord = GetWriteInDBCommand(type, data);
+                logRecord.Connection = ServiceSettings.Get().ConnectionString.OpenNewConnection();
+                OracleTransaction trasaction = logRecord.Connection.BeginTransaction();
+                logRecord.ExecuteNonQuery();
+                trasaction.Commit();
+            }
+            catch (Exception ex)
+            { }
         }
     }
 

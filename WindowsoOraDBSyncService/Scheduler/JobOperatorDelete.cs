@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using OracleProcedureManager;
+using OraDBSyncService.Logging;
 using Serilog;
 
 namespace OraDBSyncService.Scheduler
@@ -12,7 +10,7 @@ namespace OraDBSyncService.Scheduler
     {
         public MainScheduler Scheduler => MainScheduler.GetMainScheduler();
 
-        public Task<bool> Operate(SynchronizationTask taskJob)
+        public Task<JobOperatorResponce> Operate(SynchronizationTask taskJob)
         {
             return DeleteTaskAsync(taskJob.SyncTaskId);
         }
@@ -22,24 +20,27 @@ namespace OraDBSyncService.Scheduler
         /// </summary>
         /// <param name="taskId"></param>
         /// <returns></returns>
-        private async Task<bool> DeleteTaskAsync(string taskId)
+        private async Task<JobOperatorResponce> DeleteTaskAsync(string taskId)
         {
             try
             {
                 if (await Scheduler.CheckTaskInSchedule(taskId))
                 {
 
-                    return await Scheduler.DeleteTaskAsync(taskId);
+                    bool check = await Scheduler.DeleteTaskWithInterruptAsync(taskId);
+                    Log.Information($"Task deleted: {taskId}");
+                    BPMTaskSpecialLog.TaskStateLog(taskId, TaskStateConstants.NotInSchedule);
+                    return new JobOperatorResponce(check, ResponceConstants.DeleteSuccess + taskId);
                 }
                 else
                 {
-                    return false;
+                    return new JobOperatorResponce(false, ResponceConstants.DeleteFail + taskId);
                 }
             }
             catch (Exception e)
             {
                 Log.Error($"Failed to delete task: {taskId}");
-                return false;
+                return new JobOperatorResponce(false, $"{ResponceConstants.DeleteFail}Задача: {taskId}.\r\nОшибка: {e.Message}");
             }
         }
     }

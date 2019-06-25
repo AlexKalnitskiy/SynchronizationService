@@ -2,10 +2,6 @@
 using OraDBSyncService.Logging;
 using Quartz;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,25 +20,30 @@ namespace OraDBSyncService.Scheduler
         {
             SynchronizationTask syncTask = (SynchronizationTask)context.JobDetail.JobDataMap["task"];
             Log.Warning($"Executing SyncTask with ID: {syncTask.SyncTaskId}");
-            BPMTaskSpecialLog.Log(syncTask.SyncTaskId, $"Выполнение задачи синхронизации");
-            //filler
+            BPMTaskSpecialLog.Log(syncTask.SyncTaskId, $"Начало выполнения задачи синхронизации");
+            BPMTaskSpecialLog.TaskStateLog(syncTask.SyncTaskId, TaskStateConstants.Executing);
             return Task.Run(() => this.GetHashCode());
         }
 
         public Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException, CancellationToken cancellationToken = default(CancellationToken))
         {
-            SyncTaskExecutionResult result = (SyncTaskExecutionResult)context.Result;
-            if (result.isExecutedCorrectly)
+            SyncTaskExecutionContext result = (SyncTaskExecutionContext)context.Result;
+            if (result.TaskCurrentState == TaskStateConstants.Ready)
             {
                 Log.Warning($"Executed SyncTask with ID: {result.SyncTaskId}");
                 BPMTaskSpecialLog.Log(result.SyncTaskId, $"Выполнение задачи успешно завершено");
+                BPMTaskSpecialLog.TaskStateLog(result.SyncTaskId, TaskStateConstants.Ready);
             }
-            else
-                result.ExceptionList.ForEach(x => {
+            else if (result.TaskCurrentState == TaskStateConstants.Failed)
+            {
+                result.ExceptionList.ForEach(x =>
+                {
                     Log.Error(x, $"Error at Job with ID: {result.SyncTaskId}");
                     BPMTaskSpecialLog.Log(result.SyncTaskId, $"Ошибка синхронизации: {x.Message}");
                 });
-            //filler
+                BPMTaskSpecialLog.TaskStateLog(result.SyncTaskId, TaskStateConstants.Failed);
+            }
+            WebServer.CommonRequestRouter.GetRouter().Broadcast(WebServer.CommonRequestRouter.Refresh);
             return Task.Run(() => this.GetHashCode());
         }
     }

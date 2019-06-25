@@ -7,9 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OracleProcedureManager", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OraDBSyncService", "WindowsoOraDBSyncService\OraDBSyncService.csproj", "{EBA37214-00A9-4104-83FD-7223265C381E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OraDBSyncServiceController", "OraDBSyncServiceController\OraDBSyncServiceController.csproj", "{BDAB5791-79EC-42BB-89C2-5A17493DAC57}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiTests", "Tests\ApiTests.csproj", "{93A0E433-B6FA-40B9-9FDA-C772A1423056}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncServiceClient", "SyncServiceClient\SyncServiceClient.csproj", "{4489EAC7-68C9-4926-B383-535F7C4DB53F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LGDEV", "..\..\..\VSProjects\LGDEV\LGDEV\LGDEV\LGDEV.csproj", "{BFF02EE0-713D-44C1-9337-28009F46FF96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +27,18 @@ Global
 		{EBA37214-00A9-4104-83FD-7223265C381E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBA37214-00A9-4104-83FD-7223265C381E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBA37214-00A9-4104-83FD-7223265C381E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BDAB5791-79EC-42BB-89C2-5A17493DAC57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BDAB5791-79EC-42BB-89C2-5A17493DAC57}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BDAB5791-79EC-42BB-89C2-5A17493DAC57}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BDAB5791-79EC-42BB-89C2-5A17493DAC57}.Release|Any CPU.Build.0 = Release|Any CPU
 		{93A0E433-B6FA-40B9-9FDA-C772A1423056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93A0E433-B6FA-40B9-9FDA-C772A1423056}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93A0E433-B6FA-40B9-9FDA-C772A1423056}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93A0E433-B6FA-40B9-9FDA-C772A1423056}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4489EAC7-68C9-4926-B383-535F7C4DB53F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4489EAC7-68C9-4926-B383-535F7C4DB53F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4489EAC7-68C9-4926-B383-535F7C4DB53F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4489EAC7-68C9-4926-B383-535F7C4DB53F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFF02EE0-713D-44C1-9337-28009F46FF96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFF02EE0-713D-44C1-9337-28009F46FF96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFF02EE0-713D-44C1-9337-28009F46FF96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFF02EE0-713D-44C1-9337-28009F46FF96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

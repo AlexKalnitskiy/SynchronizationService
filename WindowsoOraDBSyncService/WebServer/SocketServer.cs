@@ -1,19 +1,7 @@
-﻿using log4net;
-using SuperSocket.Common;
-using SuperSocket.SocketEngine;
-using SuperSocket.SocketBase;
+﻿using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
-using SuperSocket.SocketBase.Logging;
-using SuperSocket.SocketBase.Provider;
 using SuperWebSocket;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 using Serilog;
 
 namespace OraDBSyncService.WebServer
@@ -83,17 +71,21 @@ namespace OraDBSyncService.WebServer
                 SendingQueueSize = 5, //orig: 5 //1000
                 SendBufferSize = 2048, //orig: 2048 //65536
                 SendTimeOut = 5000, //orig: 5000
-                ReceiveBufferSize = 4096 //orig: 4096 //131072
+                ReceiveBufferSize = 4096, //orig: 4096 //131072
             };
-            //if (isSecured) { }
-
+            if (settings.Secured) {
+                config.Certificate = new CertificateConfig()
+                {
+                    StoreName = settings.CertStoreName,
+                    Thumbprint = settings.CertThumbprint,
+                    StoreLocation = System.Security.Cryptography.X509Certificates.StoreLocation.LocalMachine
+                };
+            }
             return config;
         }
 
         private void Initialize()
         {
-            //TO DO: реализовать выборку настроек из конфига
-            //ServiceSettings settings = ServiceSettings.FromJson("");
             ServiceSettings settings = ServiceSettings.Get();
 
             ServerConfig config = GetWSServerConfig(settings);

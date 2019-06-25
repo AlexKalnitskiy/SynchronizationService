@@ -1,15 +1,5 @@
-﻿using OracleProcedureManager;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
+﻿using System;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading;
-using Quartz;
-using Quartz.Impl;
 using System.Threading.Tasks;
 using OraDBSyncService.WebServer;
 using Serilog;
@@ -35,7 +25,7 @@ namespace OraDBSyncService
             try
             {
                 SocketServer server = SocketServer.GetDefaultServer();
-                Router = new CommonRequestRouter();
+                Router = CommonRequestRouter.GetRouter();
                 bool serverStartedFlag = Task.Factory.StartNew(server.Start, TaskCreationOptions.LongRunning).Result;
                 Log.Information("Oracle sync service started succesfully");
             }
@@ -44,6 +34,10 @@ namespace OraDBSyncService
                 Log.Fatal(exc, "Server initialization crashed!");
                 Stop();
             }
+        }
+        protected override void OnStop()
+        {
+            Router.DiscardAllStates();
         }
     }
 }

@@ -9,8 +9,8 @@ namespace OracleProcedureManager
     public interface ISyncListener
     {
         void ErrorEvent(string schemaName, Exception ex);
-        void ExecutionCancelledEvent(string schemaName);
-        void ExecutionFinishedEvent(string schemaName);
-        void ExecutionStartedEvent(string schemaName);
+        void ExecutionCancelledEvent(string objectName, string procedureName);
+        void ExecutionFinishedEvent(string objectName, string procedureName);
+        void ExecutionStartedEvent(string objectName, string procedureName);
     }
 }

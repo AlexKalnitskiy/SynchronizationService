@@ -73,13 +73,23 @@ namespace OraDBSyncService.Scheduler
             return await Scheduler.CheckExists(key);
         }
 
-        public async Task<bool> DeleteTaskAsync(string taskId)
+        public async Task<ITrigger> GetTriggetInfo(string taskId)
         {
+            return await Scheduler.GetTrigger(new TriggerKey(taskId));
+        }
+        public async Task<bool> DeleteTaskWithInterruptAsync(string taskId)
+        {
+            await InterruptTask(taskId);
             JobKey key = new JobKey(taskId);
             Scheduler = await StdSchedulerFactory.GetDefaultScheduler();
             return await Scheduler.DeleteJob(key);
         }
-
+        public async Task<bool> InterruptTask(string taskId)
+        {
+            JobKey key = new JobKey(taskId);
+            Scheduler = await StdSchedulerFactory.GetDefaultScheduler();
+            return await Scheduler.Interrupt(key);
+        }
         public async Task TriggerTaskAsync(string taskId)
         {
             JobKey key = new JobKey(taskId);

@@ -12,7 +12,7 @@ namespace OraDBSyncService.Scheduler
     {
         public MainScheduler Scheduler => MainScheduler.GetMainScheduler();
 
-        public Task<bool> Operate(SynchronizationTask taskJob)
+        public Task<JobOperatorResponce> Operate(SynchronizationTask taskJob)
         {
             return TriggerTaskAsync(taskJob);
         }
@@ -22,19 +22,19 @@ namespace OraDBSyncService.Scheduler
         /// </summary>
         /// <param name="taskId"></param>
         /// <returns></returns>
-        private async Task<bool> TriggerTaskAsync(SynchronizationTask task)
+        private async Task<JobOperatorResponce> TriggerTaskAsync(SynchronizationTask task)
         {
             try
             {
                 if (!await Scheduler.CheckTaskInSchedule(task.SyncTaskId))
                     await Scheduler.StartTaskAsync(task);
                 await Scheduler.TriggerTaskAsync(task.SyncTaskId);
-                return true;
+                return new JobOperatorResponce(true, ResponceConstants.ExecuteSuccess + task.SyncTaskId);
             }
             catch (Exception e)
             {
                 Log.Error($"Failed to trigger task: {task.SyncTaskId}");
-                return false;
+                return new JobOperatorResponce(false, $"{ResponceConstants.ExecuteFail}Задача: {task.SyncTaskId}.\r\nОшибка: {e.Message}");
             }
         }
     }

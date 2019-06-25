@@ -18,6 +18,9 @@ namespace OracleProcedureManager
 
         [JsonProperty("SyncObjectList")]
         public List<SynchronizationObject> SyncObjectList { get; set; }
+
+        [JsonProperty("WithNoIndex")]
+        public bool WithNoIndex { get; set; }
     }
 
     public partial class SynchronizationObject
@@ -30,9 +33,6 @@ namespace OracleProcedureManager
 
         [JsonProperty("Order")]
         public int Order { get; set; }
-
-        [JsonProperty("WithNoIndex")]
-        public bool WithNoIndex { get; set; }
     }
 
     public partial class Procedure

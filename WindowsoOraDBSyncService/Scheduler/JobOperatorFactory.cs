@@ -1,9 +1,4 @@
-﻿using OraDBSyncService.WebServer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SyncServiceClient;
 
 namespace OraDBSyncService.Scheduler
 {
@@ -21,6 +16,8 @@ namespace OraDBSyncService.Scheduler
                 return new JobOperatorReplace();
             if (command == RouterCommands.Execute)
                 return new JobOperatorExecute();
+            if (command == RouterCommands.Interrupt)
+                return new JobOperatorInterrupt();
             if (command == RouterCommands.Unknown)
                 return new JobOperatorCheck();
 

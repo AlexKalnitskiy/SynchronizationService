@@ -41,8 +41,20 @@ namespace OraDBSyncService
         [JsonProperty("OracleLogFunction")]
         public string OracleLogFunction { get; set; }
 
+        [JsonProperty("OracleStateLogFunction")]
+        public string OracleStateLogFunction { get; set; }
+
         [JsonProperty("OracleMainLogFunction")]
         public string OracleMainLogFunction { get; set; }
+
+        [JsonProperty("Secured")]
+        public bool Secured { get; set; }
+
+        [JsonProperty("CertStoreName")]
+        public string CertStoreName { get; set; }
+
+        [JsonProperty("CertThumbprint")]
+        public string CertThumbprint { get; set; }
     }
 
     public static partial class Serialize

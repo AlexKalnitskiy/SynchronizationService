@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using OracleProcedureManager;
+using OraDBSyncService.Logging;
 using Serilog;
 
 namespace OraDBSyncService.Scheduler
@@ -12,7 +10,7 @@ namespace OraDBSyncService.Scheduler
     {
         public MainScheduler Scheduler => MainScheduler.GetMainScheduler();
 
-        Task<bool> IJobOperator.Operate(SynchronizationTask taskJob)
+        Task<JobOperatorResponce> IJobOperator.Operate(SynchronizationTask taskJob)
         {
             return StartTaskAsync(taskJob);
         }
@@ -22,24 +20,26 @@ namespace OraDBSyncService.Scheduler
         /// </summary>
         /// <param name="jsonTask"></param>
         /// <returns></returns>
-        private async Task<bool> StartTaskAsync(SynchronizationTask task)
+        private async Task<JobOperatorResponce> StartTaskAsync(SynchronizationTask task)
         {
             try
             {
                 if (await Scheduler.CheckTaskInSchedule(task.SyncTaskId))
                 {
-                    return false;
+                    return new JobOperatorResponce(false, ResponceConstants.CreateFailExists + task.SyncTaskId);
                 }
                 else
                 {
                     await Scheduler.StartTaskAsync(task);
-                    return true;
+                    Log.Information($"Task created: {task.SyncTaskId}");
+                    BPMTaskSpecialLog.TaskStateLog(task.SyncTaskId, TaskStateConstants.Ready);
+                    return new JobOperatorResponce(true, ResponceConstants.CreateSuccess + task.SyncTaskId);
                 }
             }
             catch (Exception e)
             {
                 Log.Error($"Failed to schedule task: {task.SyncTaskId}");
-                return false;
+                return new JobOperatorResponce(false, $"{ResponceConstants.CreateFail}Задача: {task.SyncTaskId}.\r\nОшибка: {e.Message}");
             }
         }
     }

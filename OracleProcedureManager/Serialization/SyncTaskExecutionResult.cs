@@ -5,13 +5,13 @@ using Newtonsoft.Json.Converters;
 
 namespace OracleProcedureManager
 {
-    public partial class SyncTaskExecutionResult
+    public partial class SyncTaskExecutionContext
     {
         [JsonProperty("SyncTaskId")]
         public string SyncTaskId { get; set; }
 
-        [JsonProperty("isExecuted")]
-        public bool isExecutedCorrectly { get; set; }
+        [JsonProperty("TaskCurrentState")]
+        public int TaskCurrentState { get; set; }
 
         [JsonProperty("SyncObjectList")]
         public List<SyncObjExecutionResult> ObjectResultsList { get; set; }
@@ -30,7 +30,7 @@ namespace OracleProcedureManager
     }
 
     //Not serializable
-    public partial class SyncTaskExecutionResult
+    public partial class SyncTaskExecutionContext
     {
         public List<System.Exception> ExceptionList;
     }

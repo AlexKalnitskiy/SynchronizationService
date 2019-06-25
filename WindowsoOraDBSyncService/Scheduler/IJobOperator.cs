@@ -1,16 +1,22 @@
 ﻿using OracleProcedureManager;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OraDBSyncService.Scheduler
 {
+    public class JobOperatorResponce
+    {
+        public readonly bool IsSuccess;
+        public readonly string Description;
+        public JobOperatorResponce(bool isSuccess, string desc)
+        {
+            IsSuccess = isSuccess;
+            Description = desc;
+        }
+    }
     public interface IJobOperator
     {
         MainScheduler Scheduler { get; }
 
-        Task<bool> Operate(SynchronizationTask taskJob);
+        Task<JobOperatorResponce> Operate(SynchronizationTask taskJob);
     }
 }

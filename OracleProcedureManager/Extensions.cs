@@ -34,7 +34,7 @@ namespace OracleProcedureManager
         /// </summary>
         /// <param name="it"></param>
         /// <returns></returns>
-        public static SyncTaskExecutionResult CollectResults(this SyncTaskExecutionResult it)
+        public static SyncTaskExecutionContext CollectResults(this SyncTaskExecutionContext it)
         {
             if (it.ObjectResultsList.Any(x =>
             {
@@ -47,8 +47,9 @@ namespace OracleProcedureManager
                 }
             }))
             {
-                it.isExecutedCorrectly = false;
+                it.TaskCurrentState = TaskStateConstants.Failed;
             }
+            else it.TaskCurrentState = TaskStateConstants.Ready;
             return it;
         }
     }

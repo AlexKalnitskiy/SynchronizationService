@@ -21,7 +21,7 @@ namespace OracleProcedureManager
 
         #region Events
 
-        private delegate void ExecutionStateHandler(string schemaName);
+        private delegate void ExecutionStateHandler(string objectName, string procedureName);
         private event ExecutionStateHandler ExecutionStartedEvent;
         private event ExecutionStateHandler ExecutionFinishedEvent;
         private event ExecutionStateHandler ExecutionCancelledEvent;
@@ -67,6 +67,9 @@ namespace OracleProcedureManager
 
         public async Task<SyncObjExecutionResult> ExecuteProcedurePackAsync(SynchronizationObject SyncObject, CancellationToken token)
         {
+            //Sorting
+            SyncObject.ProceduresList = SyncObject.ProceduresList.OrderBy(x => x.Order).ToList();
+
             SyncObjExecutionResult objResult = new SyncObjExecutionResult()
             {
                 SchemaName = SyncObject.SchemaName,
@@ -79,16 +82,16 @@ namespace OracleProcedureManager
                 {
                     if (!token.IsCancellationRequested)
                     {
-                        ExecutionStartedEvent(SyncObject.SchemaName);
+                        ExecutionStartedEvent(SyncObject.SchemaName, procedure.ProcedureName);
                         await PerformOperationAsync(OracleProcedureBuilder.ExtractProcedure(procedure));
-                        ExecutionFinishedEvent(SyncObject.SchemaName);
+                        ExecutionFinishedEvent(SyncObject.SchemaName, procedure.ProcedureName);
                     }
                     else
                     {
+                        ExecutionCancelledEvent(SyncObject.SchemaName, procedure.ProcedureName);
                         await InterruptAll();
                         objResult.ExceptionMessage = Settings.isInterruptRequestedMessage;
                         objResult.isExecuted = false;
-                        ExecutionCancelledEvent(SyncObject.SchemaName);
                         break;
                     }
                 }
@@ -104,13 +107,15 @@ namespace OracleProcedureManager
             }
             return objResult;
         }
-        public async Task<SyncTaskExecutionResult> ExecuteSyncronizationTaskAsync(SynchronizationTask task, CancellationToken token)
+        public async Task<SyncTaskExecutionContext> ExecuteSyncronizationTaskAsync(SynchronizationTask task, CancellationToken token)
         {
+            //Sorting
+            task.SyncObjectList = task.SyncObjectList.OrderBy(x => x.Order).ToList();
             //Result object init
-            SyncTaskExecutionResult result = new SyncTaskExecutionResult()
+            SyncTaskExecutionContext result = new SyncTaskExecutionContext()
             {
                 SyncTaskId = task.SyncTaskId,
-                isExecutedCorrectly = true,
+                TaskCurrentState = TaskStateConstants.Executing,
                 ObjectResultsList = new List<SyncObjExecutionResult>(),
                 ExceptionList = new List<Exception>()
             };
@@ -127,6 +132,9 @@ namespace OracleProcedureManager
                 //Collects all SyncObjectsResults
                 result.ObjectResultsList.Add(executionResult);
             }
+            //ClosingConnection
+            await InterruptAll();
+
             return result.CollectResults();
         }
 
